@@ -1,0 +1,10 @@
+/.vscode
+*/__pycache__
+/accounts_backup_12_25_20
+accounts_edit.py
+trans_old.py
+trans_old2.py
+test.py
+account_transact_old.py
+account_transact.py
+/__pycache__

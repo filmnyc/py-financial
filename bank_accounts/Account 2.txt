@@ -1,0 +1,11 @@
+Account 3
+12/23/2020 account opened - $67.80
+01/18/2021 Deposit - $23.70
+01/20/2021 Withdraw - $23.90
+01/20/2021 Deposit - $12.90
+02/06/1948 Withdraw - 15.90
+04/28/2021 Deposit - 23.00
+03/07/2021 Deposit - 42.97
+03/05/2021 Withdraw - $10.20
+02/22/2021 Withdraw - $45.00
+03/01/2021 Deposit - $27.80
