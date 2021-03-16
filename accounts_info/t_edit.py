@@ -169,6 +169,7 @@ def edit_three(selected, selected_transaction, del_ed, entity, page):
     if change_amt == 'y':
         tran_a = currency('y')
     else:
+        system('clear')
         return 're-edit', 're-edit'
     
     new_tran = (tran_0 + ' ' + tran_1 + ' - ' + tran_a + '\n')
@@ -200,47 +201,47 @@ def edit_three(selected, selected_transaction, del_ed, entity, page):
         system('clear')
         return 're-edit', 're-edit'
 
-        tran_a = '${:,.2f}'.format(float(tran_a)) 
+    tran_a = '${:,.2f}'.format(float(tran_a)) 
 
-        #Compare old transaction to new transaction 
-        print()
-        print('Original transaction: ' + selected_transaction + ') ' + tran_0 + ' ' + tran_1 + ' - $' + tran_3)
-        print('New transaction: ' + selected_transaction + ') ' + tran_0 + ' ' + tran_1 + ' - ' + tran_a)
-        new_tran = (tran_0 + ' ' + tran_1 + ' - ' + tran_a + '\n')
+    #Compare old transaction to new transaction 
+    print()
+    print('Original transaction: ' + selected_transaction + ') ' + tran_0 + ' ' + tran_1 + ' - $' + tran_3)
+    print('New transaction: ' + selected_transaction + ') ' + tran_0 + ' ' + tran_1 + ' - ' + tran_a)
+    new_tran = (tran_0 + ' ' + tran_1 + ' - ' + tran_a + '\n')
 
-        tran_total = '{:,.2f}'.format(float(tran_total)) 
-        print()
+    tran_total = '{:,.2f}'.format(float(tran_total)) 
+    print()
 
-        #Alter balance
-        print('Alter balance: ' + sign + tran_total)
-        tran_total = (sign + tran_total)
-        do_trans = go_ahead("If this is okay enter 'y/n': ")
-        if do_trans == 'y':
-            pass
-        else:
-            system('clear')
-            return 're-edit', 're-edit'
+    #Alter balance
+    print('Alter balance: ' + sign + tran_total)
+    tran_total = (sign + tran_total)
+    do_trans = go_ahead("If this is okay enter 'y/n': ")
+    if do_trans == 'y':
+        pass
+    else:
+        system('clear')
+        return 're-edit', 're-edit'
 
-            #show old and new balance
-        selected_balance = account_balance(selected)
-        old_balance = selected_balance.strip() 
-        new_balance = str(float(old_balance) + float(tran_total))
-        new_balance = '{:.2f}'.format(float(new_balance)) + '\n'
-        print()
-        print('Previous balance: ' + old_balance + ' New balance: ' + new_balance)
-        do_bal = go_ahead("If this is okay enter 'y/n': ")
-        if do_bal == 'y':
-            return new_tran, new_balance
-           # #update balance
-           # system('clear')
-           # balance_update(selected, new_balance)
+        #show old and new balance
+    selected_balance = account_balance(selected)
+    old_balance = selected_balance.strip() 
+    new_balance = str(float(old_balance) + float(tran_total))
+    new_balance = '{:.2f}'.format(float(new_balance)) + '\n'
+    print()
+    print('Previous balance: ' + old_balance + ' New balance: ' + new_balance)
+    do_bal = go_ahead("If this is okay enter 'y/n': ")
+    if do_bal == 'y':
+        return new_tran, new_balance
+       # #update balance
+       # system('clear')
+       # balance_update(selected, new_balance)
 
-           #     #  update transaction record
-           # update_transaction(selected_account, selected_transaction, new_tran)
-           # trans_edit(selected, selected_transaction, del_ed, entity, page)
-        else:
-            system('clear')
-            return 're-edit', 're-edit'
+       #     #  update transaction record
+       # update_transaction(selected_account, selected_transaction, new_tran)
+       # trans_edit(selected, selected_transaction, del_ed, entity, page)
+    else:
+        system('clear')
+        return 're-edit', 're-edit'
 
 
 def edit_four(selected, selected_transaction, del_ed, entity, page):
