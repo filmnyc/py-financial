@@ -1,11 +1,12 @@
 from os import system
 import sys
-#from accounts_info.menu import page_menu 
 from .trans import trans_edit 
 from account_data.accounts_db import account_listing, account_name, account_balance, list_transactions, transaction_list, update_transaction, balance_update
 from .account_transact import transact
 from .create_delete import create_account, change_account
 from .t_edit import tedit_menu, edit_one, edit_two, edit_three, edit_four
+from applets.applet import select_transaction
+#from .test import select_transaction
 
 save_path = 'bank_accounts/'
 information_file = 'information/'
@@ -176,26 +177,17 @@ def select_menu(a, r, a_list, ed_del):
             list_menu(a, r, a_list)
 
 
-
-###############
-        
-
-# ? Transactions List Section
-## Create the list of transactions in the account
-##########
-        
-
 # The menu under listed transaction
 def page_menu(selected, page):
     selected_name = account_name(selected)
     transaction_items = list_transactions(selected_name)
     transaction_len = len(transaction_items) - 1
-    print('\nDisplay Menu')
+    print('\nDisplay Menu\n')
     if not int(page) >= transaction_len:
         print(' Page Up (u)')
     if int(page) - 5 > 0:
         print(' Page Down (d)')
-    print(' Deposit (a)\n Withdraw (w)\n Edit Transaction (e)\n Delete Transaction (b)\n Main Menu (m)?\n Quit (q)?')
+    print(' Deposit (a)\n Withdraw (w)\n Edit/Delete Transaction (e)\n Main Menu (m)\n Quit (q)')
     print()
     change = str(input("Select: "))
     change = change.lower()
@@ -227,11 +219,13 @@ def page_menu(selected, page):
     elif change == "e": 
         system('clear')
         transaction_list(selected, page)
-        select_transaction(selected, page, 'Edit')
-    elif change == "b": 
-        system('clear')
-        transaction_list(selected, page)
-        select_transaction(selected, page, 'Delete')
+        selected_transaction = select_transaction(selected, page)
+        if selected_transaction == 'go_back':
+            transaction_list(selected, page)
+            page_menu(selected, page)
+        else:
+            system('clear')
+            tedit(selected, selected_transaction, page)
     elif change == "a": 
         system('clear')
         transaction_list(selected, page)
@@ -256,97 +250,95 @@ def page_menu(selected, page):
         print()
         print("Invalid input")
         page_menu(selected, page)
-##################
 
 # Select transaction for editing or deleting
-def select_transaction(selected, page, del_ed):
-    selected_account = account_name(selected)
-    transact_len = list_transactions(selected_account)
-    a = len(transact_len) - (int(page) + 1)
-    b = a + 5
-    if a <= 1:
-        low = a
-    else:
-        low = 0
-    print()
-    print('Select Transaction (' + str(a + 1 - low) + ' - ' + str(a + 5) + ')')
-    print('Return (r):')
-    print()
-    selected_transaction = input('Select: ')
-    system('clear')
-    if selected_transaction == 'r':
-        system('clear')
-        transaction_list(selected, page)
-        page_menu(selected, page)
-    elif selected_transaction.isnumeric() == False:
-        system('clear')
-        transaction_list(selected,page)
-        print()
-        print('"Submit a number or (r)"')
-        select_transaction(selected, page, del_ed)
-    elif int(selected_transaction) < a + 1 - low or int(selected_transaction) > (a + 5):
-        system('clear')
-        transaction_list(selected, page)
-        print()
-        print('"Submit number within range" ')
-        select_transaction(selected, page, del_ed)
-    else:        
-        #transaction_list(selected, page)
-        if del_ed == 'Edit':
-            tedit(selected, selected_transaction, 'Edit', 'transaction', page)
-#            trans_edit(selected, selected_transaction, 'Edit', 'transaction', page)
-        else:
-            trans_edit(selected, selected_transaction, 'Delete', 'transaction', page)
-        transaction_list(selected, page)
-        page_menu(selected, page)
+#def select_transaction(selected, page):
+#    selected_account = account_name(selected)
+#    transact_len = list_transactions(selected_account)
+#    a = len(transact_len) - (int(page) + 1)
+#    b = a + 5
+#    if a <= 1:
+#        low = a
+#    else:
+#        low = 0
+#    print()
+#    print('Select Transaction (' + str(a + 1 - low) + ' - ' + str(a + 5) + ')')
+#    print('Return (r):')
+#    print()
+#    selected_transaction = input('Select: ')
+#    system('clear')
+#    if selected_transaction == 'r':
+#        system('clear')
+#        transaction_list(selected, page)
+#        page_menu(selected, page)
+#    elif selected_transaction.isnumeric() == False:
+#        system('clear')
+#        transaction_list(selected,page)
+#        print()
+#        print('"Submit a number or (r)"')
+#        select_transaction(selected, page)
+#    elif int(selected_transaction) < a + 1 - low or int(selected_transaction) > (a + 5):
+#        system('clear')
+#        transaction_list(selected, page)
+#        print()
+#        print('"Submit number within range" ')
+#        select_transaction(selected, page, del_ed)
+#    else:        
+#       #transaction_list(selected, page)
+#       # tedit(selected, selected_transaction, page)
+#        tedit(selected, selected_transaction, page)
+       #else:
+       #    trans_edit(selected, selected_transaction, 'Delete', 'transaction', page)
+       #transaction_list(selected, page)
+       #page_menu(selected, page)
 
 
-def tedit(selected, selected_transaction, del_ed, entity, page):
-    edit_num = tedit_menu(selected, selected_transaction, del_ed, entity, page)
+def tedit(selected, selected_transaction, page):
+    edit_num = tedit_menu(selected, selected_transaction, page)
     if edit_num == '1':
         system('clear')
-        new_date = edit_one(selected, selected_transaction, del_ed, entity, page)        
+        new_date = edit_one(selected, selected_transaction, page)        
         if new_date == 're-edit':
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
         else:
             selected_account = account_name(selected)
             update_transaction(selected_account, selected_transaction, new_date)
             system('clear')
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
     elif edit_num == '2':
         system('clear')
-        new_tran, new_balance = edit_two(selected, selected_transaction, del_ed, entity, page)        
+        new_tran, new_balance = edit_two(selected, selected_transaction, page)        
         if new_tran == 're-edit':
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
         else:
             selected_account = account_name(selected)
             update_transaction(selected_account, selected_transaction, new_tran)
             balance_update(selected, new_balance)
             system('clear')
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
     elif edit_num == '3':
         system('clear')
-        new_tran, new_balance = edit_three(selected, selected_transaction, del_ed, entity, page)        
+        new_tran, new_balance = edit_three(selected, selected_transaction, page)        
         if new_tran == 're-edit':
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
         else:
             selected_account = account_name(selected)
             update_transaction(selected_account, selected_transaction, new_tran)
             balance_update(selected, new_balance)
             system('clear')
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
 
     elif edit_num == '4':
         system('clear')
-        new_tran, new_balance = edit_four(selected, selected_transaction, del_ed, entity, page)        
+        new_tran, new_balance = edit_four(selected, selected_transaction, page)        
         if new_tran == 're-edit':
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
         else:
             selected_account = account_name(selected)
             update_transaction(selected_account, selected_transaction, new_tran)
             balance_update(selected, new_balance)
             system('clear')
-            tedit(selected, selected_transaction, del_ed, entity, page)
+            tedit(selected, selected_transaction, page)
     else:
         edit_num == '5'
         system('clear')
@@ -354,24 +346,5 @@ def tedit(selected, selected_transaction, del_ed, entity, page):
         page_menu(selected, page)
 
 
-#def currency(amount, title):
-#    if amount.replace('.', '', 1).isdigit() == False:
-#        message = 'print()\n"The ' + title + ' must be in digits"\nprint()'
-#        show = 'y'
-#        return message, show
-#    elif '.' not in amount:
-#        new_amount = '{:.2f}'.format(float(amount))
-#        show = 'n'
-#        return new_amount, show
-#    else:
-#        d_cents = amount.split('.')
-#        if len(d_cents[1]) > 2:
-#            message = 'print()\nprint("' + title + ' should be formated as currency")\nprint()'
-#            show = 'y'
-#            return message, show
-#        else:
-#            new_amount = '{:.2f}'.format(float(amount))
-#            show = 'n'
-#            return new_amount, show
 
 #account_list()

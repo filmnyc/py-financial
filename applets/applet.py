@@ -1,5 +1,6 @@
 from account_data.accounts_db import account_name, list_transactions, transaction_list
 import re
+from os import system
 
 
 # Check for "yes" or "no" action=comment(what you want to do), entity=on a variable, selectedname on object.
@@ -43,12 +44,10 @@ def currency(show):
 def go_ahead(statement):
     approve_it = ''
     while not approve_it == 'y' and not approve_it == 'n':
-        print()
         approve_it = input(statement + ' (y/n) ')
         if approve_it == 'y' or approve_it == 'n':
             pass 
         else:
-            print()
             print('"' + statement + '? \'y\' or \'n\'"')
     return approve_it    
 
@@ -72,9 +71,49 @@ def trans_header(selected, selected_transaction, page):
     mystring = tran_3
     tran_3 = trim.sub('', mystring)
     
-    
     transaction_list(selected, page)
     print()
-    print(selected_transaction + ') ' + tran_0 + ' ' + tran_1 + ' - ' + tran_3)
+    print(selected_transaction + ') ' + tran_0 + ' ' + tran_1 + ' - $' + tran_3)
     print()
     return tran_0, tran_1, tran_3
+
+
+
+# Select transaction for editing or deleting
+def select_transaction(selected, page):
+    selected_account = account_name(selected)
+    transact_len = list_transactions(selected_account)
+    a = len(transact_len) - (int(page) + 1)
+    b = a + 5
+    if a <= 1:
+        low = a
+    else:
+        low = 0
+    send_transaction = ''
+    message = ''
+    while send_transaction == '':
+        print(message)
+        print()
+        print('Select Transaction (' + str(a + 1 - low) + ' - ' + str(a + 5) + ')')
+        print('Return (r):')
+        print()
+        the_transaction = input('Select: ')
+        print(the_transaction)
+        if the_transaction == 'r':
+            send_transaction = 'go_back'
+            system('clear')
+            return send_transaction
+        elif the_transaction.isnumeric() == False:
+            system('clear')
+            transaction_list(selected, page)
+            print()
+            message = '"Submit a \'number\' or (r)"'
+        elif int(the_transaction) < a + 1 - low or int(the_transaction) > (a + 5):
+            system('clear')
+            transaction_list(selected, page)
+            print()
+            message = '"Submit number within range" '
+        else:
+            send_transaction = the_transaction
+            system('clear')
+            return send_transaction
